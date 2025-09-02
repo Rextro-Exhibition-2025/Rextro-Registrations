@@ -205,11 +205,16 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
   };
 
   return (
-    <div className="registration-form-overlay">
-      <div className="registration-form-content">
+    <div className="registration-page">
+      <div className="registration-container">
         <div className="form-header">
-          <h2>Register for {event.title}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="back-btn" onClick={onClose}>← Back to Events</button>
+          <h1>Register for {event.title}</h1>
+          <div className="event-info-summary">
+            <p><strong>Date:</strong> {event.eventDate}</p>
+            <p><strong>Time:</strong> {event.eventTime}</p>
+            <p><strong>Venue:</strong> {event.venue}</p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="registration-form">

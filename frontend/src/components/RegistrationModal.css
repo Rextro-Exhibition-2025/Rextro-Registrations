@@ -15,7 +15,7 @@
 .modal-content {
   background: #2a2a2a;
   border-radius: 12px;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -107,24 +107,94 @@
   margin-right: 8px;
 }
 
-.event-meta {
-  display: flex;
-  flex-wrap: wrap;
+/* Event Info Grid */
+.event-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-.event-meta span {
-  background: #444;
-  color: #ccc;
-  padding: 8px 16px;
-  border-radius: 20px;
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-label {
+  color: #00ffcc;
+  font-weight: 600;
   font-size: 0.9rem;
 }
 
-.event-meta strong {
+.info-value {
   color: #fff;
-  margin-right: 5px;
+  font-size: 1rem;
+}
+
+/* Speakers Section */
+.speakers-section {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: #333;
+  border-radius: 8px;
+}
+
+.speakers-section h3 {
+  color: #00ffcc;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.speakers-names {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.speaker-descriptions {
+  margin-top: 15px;
+}
+
+.speaker-descriptions h4 {
+  color: #fff;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.speaker-descriptions p {
+  color: #ccc;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Description Section */
+.description-section {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: #333;
+  border-radius: 8px;
+}
+
+.description-section h3 {
+  color: #00ffcc;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+/* Registration Info */
+.registration-info {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #333;
+  border-radius: 8px;
+}
+
+.registration-info h3 {
+  color: #00ffcc;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
 }
 
 .modal-footer {
@@ -172,12 +242,14 @@
     font-size: 1.5rem;
   }
   
-  .event-meta {
-    flex-direction: column;
+  .event-info-grid {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
   
-  .event-meta span {
-    text-align: center;
+  .speakers-section,
+  .description-section,
+  .registration-info {
+    padding: 15px;
   }
 }

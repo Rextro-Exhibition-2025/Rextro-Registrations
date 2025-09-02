@@ -1,6 +1,18 @@
 import React from "react";
 import "./RegistrationModal.css";
 
+// Helper function to get image source
+const getImageSrc = (imageUrl) => {
+  // If it's just a filename (local image), construct the path
+  if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/')) {
+    // For local images, use the public path
+    return `/events/${imageUrl}`;
+  }
+  
+  // If it's a full URL, return as is
+  return imageUrl;
+};
+
 const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
   if (!isOpen || !event) return null;
 
@@ -14,6 +26,11 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
     });
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return "Not specified";
+    return timeString;
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -22,38 +39,66 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
         </button>
         
         <div className="modal-header">
-          <img src={event.image} alt={event.title} className="modal-image" />
+          <img src={getImageSrc(event.image)} alt={event.title} className="modal-image" />
           <h2 className="modal-title">{event.title}</h2>
         </div>
 
         <div className="modal-body">
           <div className="event-details">
-            <h3>Event Details</h3>
-            <p className="long-description">{event.longDescription}</p>
-            
-            <div className="date-info">
-              <div className="date-item">
-                <strong>Registration Opens:</strong> {formatDate(event.registrationOpenDate)}
+            <div className="event-info-grid">
+              <div className="info-item">
+                <span className="info-label">📅 Date:</span>
+                <span className="info-value">{formatDate(event.eventDate)}</span>
               </div>
-              <div className="date-item">
-                <strong>Registration Closes:</strong> {formatDate(event.registrationCloseDate)}
+              <div className="info-item">
+                <span className="info-label">🕒 Time:</span>
+                <span className="info-value">{formatTime(event.eventTime)}</span>
               </div>
-              <div className="date-item">
-                <strong>Event Date:</strong> {formatDate(event.eventDate)}
+              <div className="info-item">
+                <span className="info-label">📍 Venue:</span>
+                <span className="info-value">{event.venue || "Not specified"}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">🏛️ Society:</span>
+                <span className="info-value">{event.society}</span>
               </div>
             </div>
 
-            <div className="event-meta">
-              <span><strong>Type:</strong> {event.type}</span>
-              <span><strong>Department:</strong> {event.department}</span>
-              <span><strong>Society:</strong> {event.society}</span>
+            <div className="speakers-section">
+              <h3>👥 Speakers</h3>
+              <p className="speakers-names">{event.speakers || "Not specified"}</p>
+              {event.speakerDescriptions && (
+                <div className="speaker-descriptions">
+                  <h4>About the Speakers:</h4>
+                  <p>{event.speakerDescriptions}</p>
+                </div>
+              )}
             </div>
+
+            <div className="description-section">
+              <h3>📝 Event Description</h3>
+              <p className="long-description">{event.longDescription || "No description available"}</p>
+            </div>
+            
+            {event.type && event.type.toLowerCase() === "competition" && (
+              <div className="registration-info">
+                <h3>📋 Registration Information</h3>
+                <div className="date-info">
+                  <div className="date-item">
+                    <strong>Registration Opens:</strong> {formatDate(event.registrationOpenDate)}
+                  </div>
+                  <div className="date-item">
+                    <strong>Registration Closes:</strong> {formatDate(event.registrationCloseDate)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="modal-footer">
           <button className="register-btn" onClick={onRegister}>
-            Proceed to Registration
+            Register Now
           </button>
         </div>
       </div>

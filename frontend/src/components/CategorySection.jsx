@@ -1,7 +1,7 @@
 import React from "react";
 import EventCard from "./EventCard";
 
-const CategorySection = ({ title, events, onRegisterClick }) => {
+const CategorySection = ({ title, events, onRegisterClick, onMeetingLinkClick }) => {
   if (events.length === 0) return null;
 
   return (
@@ -13,6 +13,7 @@ const CategorySection = ({ title, events, onRegisterClick }) => {
             key={ev.id} 
             {...ev} 
             onRegisterClick={() => onRegisterClick(ev)}
+            onMeetingLinkClick={(payload) => onMeetingLinkClick && onMeetingLinkClick(ev, payload)}
           />
         ))}
       </div>

@@ -10,10 +10,15 @@ function App() {
     registrationOpenDate: "",
     registrationCloseDate: "",
     eventDate: "",
+    eventTime: "",
+    venue: "",
+    speakers: "",
+    speakerDescriptions: "",
     society: "",
     department: "",
     image: "",
     googleSheetLink: "",
+    meetingLink: "",
     questions: []
   });
 
@@ -28,7 +33,7 @@ function App() {
       { id: "email", order: 2, type: "email", label: "Email Address", required: true, conditional: null, options: [] },
       { id: "department", order: 3, type: "select", label: "Department", required: true, conditional: null, options: ["CSE", "Mechanical", "Electrical", "Civil", "Marine"] },
       { id: "year", order: 4, type: "select", label: "Year of Study", required: true, conditional: null, options: ["1st Year", "2nd Year", "3rd Year", "4th Year"] },
-      { id: "experience", order: 5, type: "radio", label: "Previous Session Experience", required: false, conditional: null, options: ["None", "Beginner", "Intermediate", "Advanced"] },
+      { id: "experience", order: 5, type: "radio", label: "Previous Webinar Experience", required: false, conditional: null, options: ["None", "Beginner", "Intermediate", "Advanced"] },
       { id: "topics", order: 6, type: "textarea", label: "Specific Topics of Interest", required: false, conditional: null, options: [] }
     ],
     Workshop: [
@@ -127,10 +132,15 @@ function App() {
       registrationOpenDate: "",
       registrationCloseDate: "",
       eventDate: "",
+      eventTime: "",
+      venue: "",
+      speakers: "",
+      speakerDescriptions: "",
       society: "",
       department: "",
       image: "",
       googleSheetLink: "",
+      meetingLink: "",
       questions: []
     });
   };
@@ -139,7 +149,7 @@ function App() {
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.type || !formData.title || !formData.shortDescription || !formData.registrationOpenDate || !formData.registrationCloseDate || !formData.eventDate || !formData.society || !formData.department || !formData.googleSheetLink) {
+    if (!formData.type || !formData.title || !formData.shortDescription || !formData.registrationOpenDate || !formData.registrationCloseDate || !formData.eventDate || !formData.eventTime || !formData.venue || !formData.speakers || !formData.society || !formData.department || !formData.googleSheetLink) {
       setMessage({ text: "Please fill in all required fields", type: "error" });
       return;
     }
@@ -212,7 +222,7 @@ function App() {
           Type
           <select name="type" value={formData.type} onChange={handleChange}>
             <option value="">Select Event Type</option>
-            <option value="Session">Session</option>
+            <option value="Session">Webinar</option>
             <option value="Workshop">Workshop</option>
             <option value="Competition">Competition</option>
           </select>
@@ -286,6 +296,52 @@ function App() {
         </label>
 
         <label>
+          Event Time
+          <input
+            type="time"
+            name="eventTime"
+            value={formData.eventTime}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          Venue
+          <input
+            type="text"
+            name="venue"
+            value={formData.venue}
+            onChange={handleChange}
+            placeholder="e.g., Main Auditorium, Online, Lab 101"
+            required
+          />
+        </label>
+
+        <label>
+          Speakers
+          <input
+            type="text"
+            name="speakers"
+            value={formData.speakers}
+            onChange={handleChange}
+            placeholder="e.g., Dr. John Smith, Prof. Jane Doe"
+            required
+          />
+        </label>
+
+        <label style={{ gridColumn: "span 2" }}>
+          Speaker Descriptions
+          <textarea
+            name="speakerDescriptions"
+            rows="3"
+            value={formData.speakerDescriptions}
+            onChange={handleChange}
+            placeholder="Brief descriptions about each speaker (e.g., Dr. John Smith - Expert in AI and Machine Learning with 10+ years experience)"
+          />
+        </label>
+
+        <label>
           Society
           <select name="society" value={formData.society} onChange={handleChange} required>
             <option value="">Select Society</option>
@@ -332,6 +388,20 @@ function App() {
           />
           <small style={{ color: "#888", fontSize: "0.8rem", marginTop: "4px" }}>
             Use your Google Apps Script Web App URL (https://script.google.com/macros/s/...) or Google Sheets link
+          </small>
+        </label>
+
+        <label style={{ gridColumn: "span 2" }}>
+          Meeting Link (Optional)
+          <input
+            type="url"
+            name="meetingLink"
+            value={formData.meetingLink}
+            onChange={handleChange}
+            placeholder="https://zoom.us/j/... or https://meet.google.com/... or Microsoft Teams link"
+          />
+          <small style={{ color: "#888", fontSize: "0.8rem", marginTop: "4px" }}>
+            For Webinars and Workshops: Zoom, Google Meet, Microsoft Teams, or other meeting platform link
           </small>
         </label>
 
