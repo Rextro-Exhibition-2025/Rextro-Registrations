@@ -5,17 +5,11 @@ function App() {
   const [formData, setFormData] = useState({
     type: "",
     title: "",
-    shortDescription: "",
     longDescription: "",
-    registrationOpenDate: "",
-    registrationCloseDate: "",
     eventDate: "",
-    eventTime: "",
-    venue: "",
-    speakers: "",
-    speakerDescriptions: "",
-    society: "",
-    department: "",
+    startTime: "",
+    endTime: "",
+    speakers: [],
     image: "",
     googleSheetLink: "",
     meetingLink: "",
@@ -30,11 +24,7 @@ function App() {
   const questionTemplates = {
     Session: [
       { id: "name", order: 1, type: "text", label: "Full Name", required: true, conditional: null, options: [] },
-      { id: "email", order: 2, type: "email", label: "Email Address", required: true, conditional: null, options: [] },
-      { id: "department", order: 3, type: "select", label: "Department", required: true, conditional: null, options: ["CSE", "Mechanical", "Electrical", "Civil", "Marine"] },
-      { id: "year", order: 4, type: "select", label: "Year of Study", required: true, conditional: null, options: ["1st Year", "2nd Year", "3rd Year", "4th Year"] },
-      { id: "experience", order: 5, type: "radio", label: "Previous Webinar Experience", required: false, conditional: null, options: ["None", "Beginner", "Intermediate", "Advanced"] },
-      { id: "topics", order: 6, type: "textarea", label: "Specific Topics of Interest", required: false, conditional: null, options: [] }
+      { id: "email", order: 2, type: "email", label: "Email Address", required: true, conditional: null, options: [] }
     ],
     Workshop: [
       { id: "name", order: 1, type: "text", label: "Full Name", required: true, conditional: null, options: [] },
@@ -103,6 +93,35 @@ function App() {
     }));
   };
 
+  // Speaker management functions
+  const addSpeaker = () => {
+    const newSpeaker = {
+      id: `speaker_${Date.now()}`,
+      name: "",
+      qualification: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      speakers: [...prev.speakers, newSpeaker]
+    }));
+  };
+
+  const updateSpeaker = (speakerId, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      speakers: prev.speakers.map(speaker => 
+        speaker.id === speakerId ? { ...speaker, [field]: value } : speaker
+      )
+    }));
+  };
+
+  const removeSpeaker = (speakerId) => {
+    setFormData(prev => ({
+      ...prev,
+      speakers: prev.speakers.filter(speaker => speaker.id !== speakerId)
+    }));
+  };
+
   const moveQuestion = (questionId, direction) => {
     setFormData(prev => {
       const questions = [...prev.questions];
@@ -127,17 +146,11 @@ function App() {
     setFormData({
       type: "",
       title: "",
-      shortDescription: "",
       longDescription: "",
-      registrationOpenDate: "",
-      registrationCloseDate: "",
       eventDate: "",
-      eventTime: "",
-      venue: "",
-      speakers: "",
-      speakerDescriptions: "",
-      society: "",
-      department: "",
+      startTime: "",
+      endTime: "",
+      speakers: [],
       image: "",
       googleSheetLink: "",
       meetingLink: "",
@@ -149,9 +162,29 @@ function App() {
     e.preventDefault();
     
     // Validate required fields
-    if (!formData.type || !formData.title || !formData.shortDescription || !formData.registrationOpenDate || !formData.registrationCloseDate || !formData.eventDate || !formData.eventTime || !formData.venue || !formData.speakers || !formData.society || !formData.department || !formData.googleSheetLink) {
+    if (!formData.type || !formData.title || !formData.eventDate || !formData.startTime || !formData.endTime || !formData.googleSheetLink) {
       setMessage({ text: "Please fill in all required fields", type: "error" });
       return;
+    }
+
+    // Validate time logic
+    if (formData.startTime && formData.endTime && formData.startTime >= formData.endTime) {
+      setMessage({ text: "End time must be after start time", type: "error" });
+      return;
+    }
+
+    // Validate speakers
+    if (formData.speakers.length === 0) {
+      setMessage({ text: "Please add at least one speaker", type: "error" });
+      return;
+    }
+
+    // Validate speaker details
+    for (let speaker of formData.speakers) {
+      if (!speaker.name.trim()) {
+        setMessage({ text: "Please provide names for all speakers", type: "error" });
+        return;
+      }
     }
 
     // Validate Google Sheet Link format (accepts both Google Sheets links and Apps Script URLs)
@@ -191,6 +224,11 @@ function App() {
         body: JSON.stringify({
           ...formData,
           id: Date.now().toString(),
+          // Format speakers for compatibility with existing frontend
+          speakers: formData.speakers.map(s => s.name).join(", "),
+          speakerDescriptions: formData.speakers.map(s => `${s.name}\n${s.qualification}`).join(" | "),
+          // Format time for compatibility with existing frontend
+          eventTime: `${formData.startTime} - ${formData.endTime}`,
         }),
       });
 
@@ -214,8 +252,8 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Admin Dashboard</h1>
-      <h2>Add New Event</h2>
+      <h1>🏢 Rextro Admin Dashboard</h1>
+      <h2>Create New Event</h2>
 
       <form onSubmit={handleSubmit}>
         <label>
@@ -240,131 +278,111 @@ function App() {
         </label>
 
         <label style={{ gridColumn: "span 2" }}>
-          Short Description
-          <textarea
-            name="shortDescription"
-            rows="2"
-            value={formData.shortDescription}
-            onChange={handleChange}
-            required
-            placeholder="Brief description for event cards (max 150 characters)"
-            maxLength="150"
-          />
-        </label>
-
-        <label style={{ gridColumn: "span 2" }}>
-          Long Description
+          Event Description
           <textarea
             name="longDescription"
             rows="4"
             value={formData.longDescription}
             onChange={handleChange}
+            placeholder="Detailed description of the event, what participants will learn, agenda, etc."
           />
         </label>
 
-        <label>
-          Registration Open Date
-          <input
-            type="date"
-            name="registrationOpenDate"
-            value={formData.registrationOpenDate}
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <div style={{ gridColumn: "span 2", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+          <label>
+            Event Date
+            <input
+              type="date"
+              name="eventDate"
+              value={formData.eventDate}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-        <label>
-          Registration Close Date
-          <input
-            type="date"
-            name="registrationCloseDate"
-            value={formData.registrationCloseDate}
-            onChange={handleChange}
-            required
-          />
-        </label>
+          <label>
+            Start Time
+            <input
+              type="time"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
-        <label>
-          Event Date
-          <input
-            type="date"
-            name="eventDate"
-            value={formData.eventDate}
-            onChange={handleChange}
-            required
-          />
-        </label>
+          <label>
+            End Time
+            <input
+              type="time"
+              name="endTime"
+              value={formData.endTime}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
 
-        <label>
-          Event Time
-          <input
-            type="time"
-            name="eventTime"
-            value={formData.eventTime}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Venue
-          <input
-            type="text"
-            name="venue"
-            value={formData.venue}
-            onChange={handleChange}
-            placeholder="e.g., Main Auditorium, Online, Lab 101"
-            required
-          />
-        </label>
-
-        <label>
-          Speakers
-          <input
-            type="text"
-            name="speakers"
-            value={formData.speakers}
-            onChange={handleChange}
-            placeholder="e.g., Dr. John Smith, Prof. Jane Doe"
-            required
-          />
-        </label>
-
-        <label style={{ gridColumn: "span 2" }}>
-          Speaker Descriptions
-          <textarea
-            name="speakerDescriptions"
-            rows="3"
-            value={formData.speakerDescriptions}
-            onChange={handleChange}
-            placeholder="Brief descriptions about each speaker (e.g., Dr. John Smith - Expert in AI and Machine Learning with 10+ years experience)"
-          />
-        </label>
-
-        <label>
-          Society
-          <select name="society" value={formData.society} onChange={handleChange} required>
-            <option value="">Select Society</option>
-            <option value="IEEE">IEEE</option>
-            <option value="Robotics Club">Robotics Club</option>
-            <option value="AI Society">AI Society</option>
-            <option value="CSE Society">CSE Society</option>
-            <option value="Mechanical Society">Mechanical Society</option>
-            <option value="Biomedical Society">Biomedical Society</option>
-          </select>
-        </label>
-
-        <label>
-          Department
-          <select name="department" value={formData.department} onChange={handleChange} required>
-            <option value="">Select Department</option>
-            <option value="Department of Electrical and Information Engineering">Department of Electrical and Information Engineering</option>
-            <option value="Computer Engineering">Computer Engineering</option>
-            <option value="Department of Mechanical and Manufacturing Engineering">Department of Mechanical and Manufacturing Engineering</option>
-            <option value="Department of Civil and Environmental Engineering">Department of Civil and Environmental Engineering</option>
-            <option value="Department of Marine and Naval Architecture">Department of Marine and Naval Architecture</option>
-          </select>
-        </label>
+        <div style={{ gridColumn: "span 2" }}>
+          <h3>Speakers Management</h3>
+          <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "1rem", fontStyle: "italic" }}>
+            Add speakers with their full names including titles (e.g., Prof., Dr.) and their position/qualification
+          </p>
+          <button type="button" onClick={addSpeaker} style={{ marginBottom: "1rem" }}>
+            Add Speaker
+          </button>
+          
+          {formData.speakers.length === 0 ? (
+            <p style={{ color: "#888", fontStyle: "italic" }}>No speakers added yet. Click "Add Speaker" to get started.</p>
+          ) : (
+            <div className="speakers-list">
+              {formData.speakers.map((speaker, index) => (
+                <div key={speaker.id} className="speaker-item" style={{ 
+                  border: "1px solid #ccc", 
+                  padding: "1rem", 
+                  marginBottom: "1rem", 
+                  borderRadius: "8px",
+                  backgroundColor: "#f9f9f9"
+                }}>
+                  <h4>Speaker {index + 1}</h4>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "1rem", marginBottom: "1rem" }}>
+                    <label>
+                      Speaker Name (with Title)
+                      <input
+                        type="text"
+                        value={speaker.name}
+                        onChange={(e) => updateSpeaker(speaker.id, "name", e.target.value)}
+                        placeholder="e.g., Senior Prof. Janaka Bandara Ekanayake"
+                        required
+                      />
+                    </label>
+                    <div style={{ display: "flex", alignItems: "end" }}>
+                      <button type="button" onClick={() => removeSpeaker(speaker.id)} style={{ 
+                        backgroundColor: "#ff6b6b", 
+                        color: "white", 
+                        border: "none", 
+                        padding: "0.5rem 1rem", 
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                      }}>
+                        Remove Speaker
+                      </button>
+                    </div>
+                  </div>
+                  <label style={{ gridColumn: "span 2" }}>
+                    Position/Qualification
+                    <textarea
+                      value={speaker.qualification}
+                      onChange={(e) => updateSpeaker(speaker.id, "qualification", e.target.value)}
+                      placeholder="e.g., Chair Professor – Electrical & Electronic Engineering, University of Peradeniya"
+                      rows="2"
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <label style={{ gridColumn: "span 2" }}>
           Image URL

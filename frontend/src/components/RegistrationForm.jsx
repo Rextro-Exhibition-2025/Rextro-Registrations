@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "./RegistrationForm.css";
+import SuccessModal from "./SuccessModal";
 
 const RegistrationForm = ({ event, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (questionId, value) => {
     setFormData(prev => ({
@@ -83,7 +85,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
 
             // Since we're using no-cors, we can't read the response
             // But we can assume success if no error was thrown
-            alert("Registration submitted successfully! Your data has been saved to the event organizer's Google Sheet.");
+            setShowSuccess(true);
           } catch (fetchError) {
             console.error("Fetch error:", fetchError);
             throw new Error("Network error while sending data to Google Sheets");
@@ -91,7 +93,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
         } else {
           // Fallback: just log the data if no Google Sheet link
           console.log("Registration data:", registrationData);
-          alert("Registration submitted successfully! (Data logged to console - no Google Sheet configured)");
+          setShowSuccess(true);
         }
 
         // Call the onSubmit callback
@@ -99,11 +101,18 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
         
       } catch (error) {
         console.error("Error submitting registration:", error);
+        // You could add an error modal here too if needed
         alert("Failed to submit registration. Please try again or contact the event organizer.");
       } finally {
         setIsSubmitting(false);
       }
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    // Close the registration form and go back to events
+    onClose();
   };
 
   const renderQuestion = (question) => {
@@ -212,8 +221,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
           <h1>Register for {event.title}</h1>
           <div className="event-info-summary">
             <p><strong>📅 Date:</strong> {event.eventDate || 'TBA'}</p>
-            <p><strong>🕒 Time:</strong> {event.eventTime || 'TBA'}</p>
-            <p><strong>📍 Venue:</strong> {event.venue || 'TBA'}</p>
+            <p><strong>🕒 Time:</strong> {event.eventTime || event.startTime && event.endTime ? `${event.startTime} - ${event.endTime}` : 'TBA'}</p>
           </div>
         </div>
 
@@ -241,6 +249,13 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
           </div>
         </form>
       </div>
+      
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={handleSuccessClose}
+        title="Registration Successful!"
+        message="Your registration has been submitted successfully! You will receive a confirmation email shortly."
+      />
     </div>
   );
 };
