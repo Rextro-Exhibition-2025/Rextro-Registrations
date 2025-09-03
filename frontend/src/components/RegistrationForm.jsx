@@ -211,9 +211,9 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
           <button className="back-btn" onClick={onClose}>← Back to Events</button>
           <h1>Register for {event.title}</h1>
           <div className="event-info-summary">
-            <p><strong>Date:</strong> {event.eventDate}</p>
-            <p><strong>Time:</strong> {event.eventTime}</p>
-            <p><strong>Venue:</strong> {event.venue}</p>
+            <p><strong>📅 Date:</strong> {event.eventDate || 'TBA'}</p>
+            <p><strong>🕒 Time:</strong> {event.eventTime || 'TBA'}</p>
+            <p><strong>📍 Venue:</strong> {event.venue || 'TBA'}</p>
           </div>
         </div>
 
@@ -235,7 +235,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
             <button type="button" className="cancel-btn" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            <button type="submit" className={`submit-btn ${isSubmitting ? 'loading' : ''}`} disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit Registration"}
             </button>
           </div>

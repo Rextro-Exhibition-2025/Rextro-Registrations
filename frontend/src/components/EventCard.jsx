@@ -13,6 +13,49 @@ const getImageSrc = (imageUrl) => {
   return imageUrl;
 };
 
+// Helper function to get event status
+const getEventStatus = (eventDate) => {
+  if (!eventDate) return null;
+  
+  try {
+    const today = new Date();
+    const evDate = new Date(eventDate);
+    today.setHours(0, 0, 0, 0);
+    evDate.setHours(0, 0, 0, 0);
+    
+    const diffTime = evDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'ended';
+    if (diffDays === 0) return 'live';
+    return 'upcoming';
+  } catch {
+    return null;
+  }
+};
+
+// Helper function to format date
+const formatDate = (dateString) => {
+  if (!dateString) return 'TBA';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  } catch {
+    return dateString;
+  }
+};
+
+// Helper function to format time
+const formatTime = (timeString) => {
+  if (!timeString) return 'TBA';
+  return timeString;
+};
+
 const EventCard = ({
   image,
   title,
@@ -26,6 +69,8 @@ const EventCard = ({
   onRegisterClick,
   onMeetingLinkClick,
 }) => {
+  const eventStatus = getEventStatus(eventDate);
+  
   const canShowMeetingLink = (() => {
     if (!eventDate) return false;
     if (!meetingLink) return false;
@@ -44,27 +89,85 @@ const EventCard = ({
     }
   })();
 
-  const meetingButtonLabel = String(type).toLowerCase() === "workshop" ? "Workshop link" : "Webinar link";
+  const meetingButtonLabel = String(type).toLowerCase() === "workshop" ? "Workshop Link" : "Webinar Link";
 
   return (
     <div className="event-card">
-      <img src={getImageSrc(image)} alt={title} className="event-image" />
+      {/* Event Image with Overlay */}
+      <div className="event-image-container">
+        <img 
+          src={getImageSrc(image)} 
+          alt={title} 
+          className="event-image"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+        <div className="event-image-overlay"></div>
+        
+        {/* Event Type Badge */}
+        <div className="event-type-badge">
+          {type || 'Event'}
+        </div>
+        
+        {/* Event Status Badge */}
+        {eventStatus && (
+          <div className={`event-status ${eventStatus}`}>
+            {eventStatus === 'live' ? '🔴 Live' : 
+             eventStatus === 'upcoming' ? '🟢 Upcoming' : 
+             '🔴 Ended'}
+          </div>
+        )}
+      </div>
+
+      {/* Event Content */}
       <div className="event-content">
-        <h2 className="event-title">{title}</h2>
-        <p className="event-date">📅 {eventDate}</p>
-        <p className="event-time">🕒 {eventTime}</p>
-        <p className="event-venue">📍 {venue}</p>
-        <p className="event-speakers">👥 {speakers}</p>
-        <p className="event-society">🏛️ {society}</p>
+        <h3 className="event-title">{title}</h3>
+        
+        <div className="event-details">
+          <div className="event-detail-item">
+            <span className="event-detail-icon">📅</span>
+            <span>{formatDate(eventDate)}</span>
+          </div>
+          
+          <div className="event-detail-item">
+            <span className="event-detail-icon">🕒</span>
+            <span>{formatTime(eventTime)}</span>
+          </div>
+          
+          <div className="event-detail-item">
+            <span className="event-detail-icon">📍</span>
+            <span>{venue || 'TBA'}</span>
+          </div>
+          
+          {speakers && (
+            <div className="event-detail-item">
+              <span className="event-detail-icon">👥</span>
+              <span>{speakers}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Society Tag */}
+        {society && (
+          <div className="event-society-tag">
+            🏛️ {society}
+          </div>
+        )}
+
+        {/* Action Buttons */}
         <div className="event-buttons">
-          <button className="event-button" onClick={onRegisterClick}>
-            View Event
+          <button 
+            className="event-button event-button-primary" 
+            onClick={onRegisterClick}
+          >
+            View Details
           </button>
+          
           {canShowMeetingLink && (
             <button
-              className="event-button"
+              className="event-button event-button-secondary"
               onClick={() => onMeetingLinkClick && onMeetingLinkClick({ link: meetingLink, title })}
-              style={{ backgroundColor: "#6b7280" }}
             >
               {meetingButtonLabel}
             </button>

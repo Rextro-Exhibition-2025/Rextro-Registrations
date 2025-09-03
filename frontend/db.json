@@ -29,10 +29,7 @@
           "label": "name",
           "required": false,
           "conditional": null,
-          "options": [
-            "1",
-            "2"
-          ]
+          "options": ["1", "2"]
         },
         {
           "id": "custom_1756624622139",
@@ -93,13 +90,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "experience_1756639385370",
@@ -108,11 +99,7 @@
           "label": "Experience Level",
           "required": true,
           "conditional": null,
-          "options": [
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "laptop_1756639385370",
@@ -125,10 +112,7 @@
             "value": "Intermediate",
             "operator": "equals"
           },
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         },
         {
           "id": "timeslot_1756639385370",
@@ -184,13 +168,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "teamname_1756640720763",
@@ -280,13 +258,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "year_1756745613143",
@@ -295,12 +267,7 @@
           "label": "Year of Study",
           "required": true,
           "conditional": null,
-          "options": [
-            "1st Year",
-            "2nd Year",
-            "3rd Year",
-            "4th Year"
-          ]
+          "options": ["1st Year", "2nd Year", "3rd Year", "4th Year"]
         },
         {
           "id": "experience_1756745613143",
@@ -309,12 +276,7 @@
           "label": "Previous Session Experience",
           "required": false,
           "conditional": null,
-          "options": [
-            "None",
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["None", "Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "topics_1756745613143",
@@ -367,13 +329,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "year_1756829803403",
@@ -382,12 +338,7 @@
           "label": "Year of Study",
           "required": true,
           "conditional": null,
-          "options": [
-            "1st Year",
-            "2nd Year",
-            "3rd Year",
-            "4th Year"
-          ]
+          "options": ["1st Year", "2nd Year", "3rd Year", "4th Year"]
         },
         {
           "id": "experience_1756829803403",
@@ -396,12 +347,7 @@
           "label": "Previous Session Experience",
           "required": false,
           "conditional": null,
-          "options": [
-            "None",
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["None", "Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "topics_1756829803403",
@@ -458,13 +404,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "year_1756834946679",
@@ -473,12 +413,7 @@
           "label": "Year of Study",
           "required": true,
           "conditional": null,
-          "options": [
-            "1st Year",
-            "2nd Year",
-            "3rd Year",
-            "4th Year"
-          ]
+          "options": ["1st Year", "2nd Year", "3rd Year", "4th Year"]
         },
         {
           "id": "experience_1756834946679",
@@ -487,12 +422,7 @@
           "label": "Previous Webinar Experience",
           "required": false,
           "conditional": null,
-          "options": [
-            "None",
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["None", "Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "topics_1756834946679",
@@ -549,13 +479,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "year_1756835496855",
@@ -564,12 +488,7 @@
           "label": "Year of Study",
           "required": true,
           "conditional": null,
-          "options": [
-            "1st Year",
-            "2nd Year",
-            "3rd Year",
-            "4th Year"
-          ]
+          "options": ["1st Year", "2nd Year", "3rd Year", "4th Year"]
         },
         {
           "id": "experience_1756835496855",
@@ -578,12 +497,7 @@
           "label": "Previous Webinar Experience",
           "required": false,
           "conditional": null,
-          "options": [
-            "None",
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["None", "Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "topics_1756835496855",
@@ -640,13 +554,7 @@
           "label": "Department",
           "required": true,
           "conditional": null,
-          "options": [
-            "CSE",
-            "Mechanical",
-            "Electrical",
-            "Civil",
-            "Marine"
-          ]
+          "options": ["CSE", "Mechanical", "Electrical", "Civil", "Marine"]
         },
         {
           "id": "year_1756836449926",
@@ -655,12 +563,7 @@
           "label": "Year of Study",
           "required": true,
           "conditional": null,
-          "options": [
-            "1st Year",
-            "2nd Year",
-            "3rd Year",
-            "4th Year"
-          ]
+          "options": ["1st Year", "2nd Year", "3rd Year", "4th Year"]
         },
         {
           "id": "experience_1756836449926",
@@ -669,12 +572,7 @@
           "label": "Previous Webinar Experience",
           "required": false,
           "conditional": null,
-          "options": [
-            "None",
-            "Beginner",
-            "Intermediate",
-            "Advanced"
-          ]
+          "options": ["None", "Beginner", "Intermediate", "Advanced"]
         },
         {
           "id": "topics_1756836449926",

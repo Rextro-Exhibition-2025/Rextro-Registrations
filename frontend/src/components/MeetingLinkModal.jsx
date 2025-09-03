@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MeetingLinkModal.css";
 
 const MeetingLinkModal = ({ isOpen, onClose, title, link }) => {
+  const [copied, setCopied] = useState(false);
+  
   if (!isOpen) return null;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(link || "");
-      alert("Link copied to clipboard");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (e) {
       console.error(e);
       alert("Failed to copy link");
@@ -22,10 +25,13 @@ const MeetingLinkModal = ({ isOpen, onClose, title, link }) => {
           <h2 className="modal-title">{title}</h2>
         </div>
         <div className="modal-body">
-          <p className="long-description">Use the link below to join:</p>
+          <div className="meeting-icon">🎥</div>
+          <p className="long-description">Ready to join? Copy the meeting link below:</p>
           <div className="link-box">
             <input className="link-input" readOnly value={link || "No link provided"} />
-            <button className="copy-btn" onClick={handleCopy}>Copy</button>
+            <button className={`copy-btn ${copied ? 'copied' : ''}`} onClick={handleCopy}>
+              {copied ? '✓ Copied!' : '📋 Copy'}
+            </button>
           </div>
         </div>
       </div>
