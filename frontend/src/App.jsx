@@ -16,7 +16,11 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [route, setRoute] = useState(window.location.hash || "");
-  const [meetingModal, setMeetingModal] = useState({ open: false, title: "", link: "" });
+  const [meetingModal, setMeetingModal] = useState({
+    open: false,
+    title: "",
+    link: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +35,59 @@ function App() {
         console.error(err);
         setIsLoading(false);
       });
+  }, []);
+
+  // Enhanced smooth scrolling for better browser compatibility
+  useEffect(() => {
+    const smoothScrollTo = (target, duration = 800) => {
+      const targetElement =
+        typeof target === "string" ? document.querySelector(target) : target;
+      if (!targetElement) return;
+
+      const targetPosition = targetElement.offsetTop;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      let startTime = null;
+
+      const animation = (currentTime) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const run = ease(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        if (timeElapsed < duration) requestAnimationFrame(animation);
+      };
+
+      const ease = (t, b, c, d) => {
+        t /= d / 2;
+        if (t < 1) return (c / 2) * t * t + b;
+        t--;
+        return (-c / 2) * (t * (t - 2) - 1) + b;
+      };
+
+      requestAnimationFrame(animation);
+    };
+
+    // Add smooth scroll to all anchor links
+    const handleAnchorClick = (e) => {
+      const href = e.target.getAttribute("href");
+      if (href && href.startsWith("#")) {
+        e.preventDefault();
+        smoothScrollTo(href);
+      }
+    };
+
+    // Add event listeners to all anchor links
+    const anchorLinks = document.querySelectorAll('a[href^="#"]');
+    anchorLinks.forEach((link) => {
+      link.addEventListener("click", handleAnchorClick);
+    });
+
+    // Cleanup
+    return () => {
+      anchorLinks.forEach((link) => {
+        link.removeEventListener("click", handleAnchorClick);
+      });
+    };
   }, []);
 
   // Simple hash-based routing
@@ -66,7 +123,7 @@ function App() {
         const evDate = new Date(ev.eventDate);
         today.setHours(0, 0, 0, 0);
         evDate.setHours(0, 0, 0, 0);
-        
+
         if (filters.eventStatus === "upcoming") {
           return evDate >= today;
         } else if (filters.eventStatus === "ended") {
@@ -121,13 +178,25 @@ function App() {
     setMeetingModal({ open: true, title: ev.title, link: payload?.link || "" });
   };
 
-  const closeMeetingModal = () => setMeetingModal({ open: false, title: "", link: "" });
+  const closeMeetingModal = () =>
+    setMeetingModal({ open: false, title: "", link: "" });
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  if (route.startsWith("#/register/") && selectedEvent && showRegistrationForm) {
+  const handleLogoClick = () => {
+    // Navigate to home page (reset to default state)
+    setActiveTab("webinar");
+    setFilters({ society: "", eventStatus: "" });
+    window.location.hash = "";
+  };
+
+  if (
+    route.startsWith("#/register/") &&
+    selectedEvent &&
+    showRegistrationForm
+  ) {
     return (
       <div className="app-container">
         <RegistrationForm
@@ -169,44 +238,68 @@ function App() {
     <div className="app-container">
       {/* Floating Background Elements */}
       <div className="floating-elements">
-        <div className="floating-circle"></div>
-        <div className="floating-circle"></div>
-        <div className="floating-circle"></div>
+        <div className="floating-circle floating-circle-1"></div>
+        <div className="floating-circle floating-circle-2"></div>
+        <div className="floating-circle floating-circle-3"></div>
+        <div className="floating-circle floating-circle-4"></div>
+        <div className="floating-circle floating-circle-5"></div>
+        <div className="floating-circle floating-circle-6"></div>
+        <div className="floating-bubble floating-bubble-1"></div>
+        <div className="floating-bubble floating-bubble-2"></div>
+        <div className="floating-bubble floating-bubble-3"></div>
+        <div className="floating-bubble floating-bubble-4"></div>
+        <div className="floating-star floating-star-1"></div>
+        <div className="floating-star floating-star-2"></div>
+        <div className="floating-star floating-star-3"></div>
+        <div className="floating-hexagon floating-hexagon-1"></div>
+        <div className="floating-hexagon floating-hexagon-2"></div>
       </div>
 
-      {/* Header with Logo */}
-      <div className="app-header">
-        <img src="/RextroLogo.png" alt="Rextro" className="app-logo" />
-        <h1 className="events-page-title">
-          Engineering Faculty Events
-        </h1>
-        <p className="app-subtitle">Discover, Register & Participate in Academic Excellence</p>
+      {/* Top Navigation Bar */}
+      <div className="top-navigation">
+        {/* Retro Logo - Left Corner */}
+        <div className="nav-logo" onClick={handleLogoClick}>
+          <img src="/RextroLogo.png" alt="Rextro" className="retro-logo" />
+        </div>
+
+        {/* Tab Navigation - Right Side */}
+        <div className="nav-tabs">
+          <button
+            className={`nav-tab ${activeTab === "webinar" ? "active" : ""}`}
+            onClick={() => handleTabClick("webinar")}
+          >
+            Webinars
+          </button>
+          <button
+            className={`nav-tab ${activeTab === "workshop" ? "active" : ""}`}
+            onClick={() => handleTabClick("workshop")}
+          >
+            Workshops
+          </button>
+          <button
+            className={`nav-tab ${activeTab === "competition" ? "active" : ""}`}
+            onClick={() => handleTabClick("competition")}
+          >
+            Competitions
+          </button>
+        </div>
       </div>
-      
-      {/* Tab Navigation */}
-      <div className="tab-navigation">
-        <button 
-          className={`tab-button ${activeTab === "webinar" ? "active" : ""}`}
-          onClick={() => handleTabClick("webinar")}
-        >
-          Webinars
-        </button>
-        <button 
-          className={`tab-button ${activeTab === "workshop" ? "active" : ""}`}
-          onClick={() => handleTabClick("workshop")}
-        >
-          Workshops
-        </button>
-        <button 
-          className={`tab-button ${activeTab === "competition" ? "active" : ""}`}
-          onClick={() => handleTabClick("competition")}
-        >
-          Competitions
-        </button>
+
+      {/* Header with Title */}
+      <div className="app-header">
+        <h1 className="events-page-title">Engineering Faculty Events</h1>
+        <p className="app-subtitle">
+          Discover, Register & Participate in Academic Excellence
+        </p>
       </div>
 
       {/* Content Container */}
       <div className="content-container">
+        {/* Category Title */}
+        <div className="category-title-wrapper">
+          <h2 className="category-title">{getCurrentTitle()}</h2>
+        </div>
+
         {/* Filter Bar */}
         <FilterBar filters={filters} setFilters={setFilters} />
 
@@ -218,9 +311,8 @@ function App() {
           </div>
         ) : (
           /* Current Tab Content */
-          <CategorySection 
-            title={getCurrentTitle()} 
-            events={getCurrentEvents()} 
+          <CategorySection
+            events={getCurrentEvents()}
             onRegisterClick={handleRegisterClick}
             onMeetingLinkClick={handleMeetingLinkClick}
           />
