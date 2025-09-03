@@ -26,20 +26,25 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
     });
   };
 
-  const formatTime = (timeString) => {
-    if (!timeString) return "Not specified";
-    return timeString;
+  const formatTime = (timeString, startTime, endTime) => {
+    if (timeString) return timeString;
+    if (startTime && endTime) return `${startTime} - ${endTime}`;
+    if (startTime) return startTime;
+    return "Not specified";
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>
-          ×
+          ✕
         </button>
         
         <div className="modal-header">
           <img src={getImageSrc(event.image)} alt={event.title} className="modal-image" />
+        </div>
+        
+        <div className="modal-title-section">
           <h2 className="modal-title">{event.title}</h2>
         </div>
 
@@ -52,15 +57,7 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
               </div>
               <div className="info-item">
                 <span className="info-label">🕒 Time:</span>
-                <span className="info-value">{formatTime(event.eventTime)}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">📍 Venue:</span>
-                <span className="info-value">{event.venue || "Not specified"}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">🏛️ Society:</span>
-                <span className="info-value">{event.society}</span>
+                <span className="info-value">{formatTime(event.eventTime, event.startTime, event.endTime)}</span>
               </div>
             </div>
 
@@ -70,7 +67,20 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
               {event.speakerDescriptions && (
                 <div className="speaker-descriptions">
                   <h4>About the Speakers:</h4>
-                  <p>{event.speakerDescriptions}</p>
+                  <div className="speaker-details">
+                    {event.speakerDescriptions.split(" | ").map((desc, index) => {
+                      const lines = desc.split('\n');
+                      const name = lines[0];
+                      const qualification = lines[1] || '';
+                      
+                      return (
+                        <div key={index} className="speaker-detail-item">
+                          <div className="speaker-name">{name}</div>
+                          {qualification && <div className="speaker-qualification">{qualification}</div>}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>

@@ -10,7 +10,6 @@ function App() {
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("webinar");
   const [filters, setFilters] = useState({
-    society: "",
     eventStatus: "",
   });
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -59,7 +58,6 @@ function App() {
   }, [events]);
 
   const filteredEvents = events.filter((ev) => {
-    const societyOk = filters.society === "" || ev.society === filters.society;
     const statusOk = (() => {
       if (!filters.eventStatus) return true;
       if (!ev.eventDate) return false;
@@ -79,7 +77,7 @@ function App() {
         return false;
       }
     })();
-    return societyOk && statusOk;
+    return statusOk;
   });
 
   const webinars = filteredEvents.filter(

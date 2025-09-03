@@ -51,9 +51,11 @@ const formatDate = (dateString) => {
 };
 
 // Helper function to format time
-const formatTime = (timeString) => {
-  if (!timeString) return 'TBA';
-  return timeString;
+const formatTime = (timeString, startTime, endTime) => {
+  if (timeString) return timeString; // Use formatted time if available
+  if (startTime && endTime) return `${startTime} - ${endTime}`;
+  if (startTime) return startTime;
+  return 'TBA';
 };
 
 const EventCard = ({
@@ -61,7 +63,8 @@ const EventCard = ({
   title,
   eventDate,
   eventTime,
-  venue,
+  startTime,
+  endTime,
   speakers,
   society,
   type,
@@ -132,12 +135,7 @@ const EventCard = ({
           
           <div className="event-detail-item">
             <span className="event-detail-icon">🕒</span>
-            <span>{formatTime(eventTime)}</span>
-          </div>
-          
-          <div className="event-detail-item">
-            <span className="event-detail-icon">📍</span>
-            <span>{venue || 'TBA'}</span>
+            <span>{formatTime(eventTime, startTime, endTime)}</span>
           </div>
           
           {speakers && (
@@ -148,12 +146,7 @@ const EventCard = ({
           )}
         </div>
 
-        {/* Society Tag */}
-        {society && (
-          <div className="event-society-tag">
-            🏛️ {society}
-          </div>
-        )}
+
 
         {/* Action Buttons */}
         <div className="event-buttons">

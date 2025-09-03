@@ -20,7 +20,7 @@ const MeetingLinkModal = ({ isOpen, onClose, title, link }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>×</button>
+        <button className="modal-close" onClick={onClose}>✕</button>
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
         </div>
