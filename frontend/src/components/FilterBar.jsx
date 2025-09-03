@@ -67,7 +67,7 @@ const FilterBar = ({ filters, setFilters }) => {
           className="filter-clear-button"
           title="Clear all filters"
         >
-          <span className="filter-icon">🗑️</span>
+          
           Clear Filters
         </button>
       )}

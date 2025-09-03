@@ -240,9 +240,21 @@ function App() {
     <div className="app-container">
       {/* Floating Background Elements */}
       <div className="floating-elements">
-        <div className="floating-circle"></div>
-        <div className="floating-circle"></div>
-        <div className="floating-circle"></div>
+        <div className="floating-circle floating-circle-1"></div>
+        <div className="floating-circle floating-circle-2"></div>
+        <div className="floating-circle floating-circle-3"></div>
+        <div className="floating-circle floating-circle-4"></div>
+        <div className="floating-circle floating-circle-5"></div>
+        <div className="floating-circle floating-circle-6"></div>
+        <div className="floating-bubble floating-bubble-1"></div>
+        <div className="floating-bubble floating-bubble-2"></div>
+        <div className="floating-bubble floating-bubble-3"></div>
+        <div className="floating-bubble floating-bubble-4"></div>
+        <div className="floating-star floating-star-1"></div>
+        <div className="floating-star floating-star-2"></div>
+        <div className="floating-star floating-star-3"></div>
+        <div className="floating-hexagon floating-hexagon-1"></div>
+        <div className="floating-hexagon floating-hexagon-2"></div>
       </div>
 
       {/* Top Navigation Bar */}
@@ -285,6 +297,11 @@ function App() {
 
       {/* Content Container */}
       <div className="content-container">
+        {/* Category Title */}
+        <div className="category-title-wrapper">
+          <h2 className="category-title">{getCurrentTitle()}</h2>
+        </div>
+
         {/* Filter Bar */}
         <FilterBar filters={filters} setFilters={setFilters} />
 
@@ -297,7 +314,6 @@ function App() {
         ) : (
           /* Current Tab Content */
           <CategorySection
-            title={getCurrentTitle()}
             events={getCurrentEvents()}
             onRegisterClick={handleRegisterClick}
             onMeetingLinkClick={handleMeetingLinkClick}
