@@ -83,7 +83,7 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
             </div>
 
             {event.speakers && (
-              <div className="info-card">
+              <div className="info-card speaker-card-full-width">
                 <div className="card-icon">👥</div>
                 <div className="card-content">
                   <div className="card-label">Speaker</div>
