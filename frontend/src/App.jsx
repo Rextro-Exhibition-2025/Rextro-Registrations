@@ -91,6 +91,7 @@ function App() {
   const handleRegisterClick = (event) => {
     setSelectedEvent(event);
     setShowModal(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleModalClose = () => {

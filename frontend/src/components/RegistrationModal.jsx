@@ -22,33 +22,37 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="reg-modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         {/* Header Section */}
-        <div className="modal-header">
-          <div className="header-content">
-            <div className="event-type-badge">
-              {event.type || 'Event'}
-            </div>
-            <h1 className="event-title">{event.title}</h1>
+        <div className="reg-modal-header">
+          <div className="reg-modal-header-content">
+            <div className="event-type-badge">{event.type || "Event"}</div>
+            <h1 className="reg-modal-event-title">{event.title}</h1>
           </div>
-          <button className="close-button" onClick={onClose}>
+          <div className="close-button" onClick={onClose}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
-          </button>
+          </div>
         </div>
 
         {/* Hero Image Section */}
         {event.image && (
           <div className="hero-section">
             <div className="image-wrapper">
-              <img 
-                src={`/events/${event.image}`} 
+              <img
+                src={`/events/${event.image}`}
                 alt={event.title}
                 className="hero-image"
                 onError={(e) => {
-                  e.target.style.display = 'none';
+                  e.target.style.display = "none";
                 }}
               />
               <div className="image-overlay"></div>
@@ -67,7 +71,7 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
                 <div className="card-value">{formatDate(event.eventDate)}</div>
               </div>
             </div>
-            
+
             <div className="info-card">
               <div className="card-icon">🕒</div>
               <div className="card-content">
@@ -119,12 +123,16 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
                     return (
                       <div key={index} className="speaker-card">
                         <div className="speaker-avatar">
-                          <span className="avatar-initial">{name.charAt(0)}</span>
+                          <span className="avatar-initial">
+                            {name.charAt(0)}
+                          </span>
                         </div>
                         <div className="speaker-details">
                           <h4 className="speaker-name">{name}</h4>
                           {qualification && (
-                            <p className="speaker-qualification">{qualification}</p>
+                            <p className="speaker-qualification">
+                              {qualification}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -148,14 +156,18 @@ const RegistrationModal = ({ event, isOpen, onClose, onRegister }) => {
                     <div className="timeline-dot"></div>
                     <div className="timeline-content">
                       <h4 className="timeline-title">Registration Opens</h4>
-                      <p className="timeline-date">{formatDate(event.registrationOpenDate)}</p>
+                      <p className="timeline-date">
+                        {formatDate(event.registrationOpenDate)}
+                      </p>
                     </div>
                   </div>
                   <div className="timeline-item">
                     <div className="timeline-dot"></div>
                     <div className="timeline-content">
                       <h4 className="timeline-title">Registration Closes</h4>
-                      <p className="timeline-date">{formatDate(event.registrationCloseDate)}</p>
+                      <p className="timeline-date">
+                        {formatDate(event.registrationCloseDate)}
+                      </p>
                     </div>
                   </div>
                 </div>
