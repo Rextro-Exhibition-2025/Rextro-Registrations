@@ -247,23 +247,18 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
           <button className="back-btn" onClick={onClose}>
             ← Back to Events
           </button>
-          <h1>Register for {event.title}</h1>
-          <div className="event-info-summary">
-            <p>
-              <strong>📅 Date:</strong> {event.eventDate || "TBA"}
-            </p>
-            <p>
-              <strong>🕒 Time:</strong>{" "}
-              {event.eventTime || (event.startTime && event.endTime)
-                ? `${event.startTime} - ${event.endTime}`
-                : "TBA"}
-            </p>
-          <button className="back-btn" onClick={onClose}>← Back to Events</button>
           <div className="header-content">
             <h1>Register for {event.title}</h1>
             <div className="event-info-summary">
-              <p><strong>📅 Date:</strong> {event.eventDate || 'TBA'}</p>
-              <p><strong>🕒 Time:</strong> {event.eventTime || event.startTime && event.endTime ? `${event.startTime} - ${event.endTime}` : 'TBA'}</p>
+              <p>
+                <strong>📅 Date:</strong> {event.eventDate || "TBA"}
+              </p>
+              <p>
+                <strong>🕒 Time:</strong>{" "}
+                {event.eventTime || (event.startTime && event.endTime)
+                  ? `${event.startTime} - ${event.endTime}`
+                  : "TBA"}
+              </p>
             </div>
           </div>
         </div>
