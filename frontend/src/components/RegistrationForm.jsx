@@ -9,59 +9,67 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (questionId, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [questionId]: value
+      [questionId]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[questionId]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [questionId]: ""
+        [questionId]: "",
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
-    event.questions.forEach(question => {
-      if (question.required && (!formData[question.id] || formData[question.id].toString().trim() === "")) {
+
+    event.questions.forEach((question) => {
+      if (
+        question.required &&
+        (!formData[question.id] ||
+          formData[question.id].toString().trim() === "")
+      ) {
         newErrors[question.id] = "This field is required";
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       setIsSubmitting(true);
-      
+
       try {
         // Prepare registration data
         const registrationData = {
           eventId: event.id,
           eventTitle: event.title,
           answers: formData,
-          submittedAt: new Date().toISOString()
+          submittedAt: new Date().toISOString(),
         };
 
         // Send data to Google Sheet via the event's googleSheetLink
         if (event.googleSheetLink) {
           let scriptUrl = event.googleSheetLink;
-          
+
           // If it's already a Google Apps Script URL, use it directly
           if (event.googleSheetLink.includes("script.google.com/macros")) {
             scriptUrl = event.googleSheetLink;
-          } 
+          }
           // If it's a Google Sheets link, convert it to Apps Script URL
-          else if (event.googleSheetLink.includes("docs.google.com/spreadsheets")) {
-            const sheetId = event.googleSheetLink.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+          else if (
+            event.googleSheetLink.includes("docs.google.com/spreadsheets")
+          ) {
+            const sheetId = event.googleSheetLink.match(
+              /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/
+            )?.[1];
             if (sheetId) {
               scriptUrl = `https://script.google.com/macros/s/${sheetId}/exec`;
             } else {
@@ -70,17 +78,17 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
           } else {
             throw new Error("Invalid Google Sheet link format");
           }
-          
+
           console.log("Sending data to:", scriptUrl);
-          
+
           try {
             const response = await fetch(scriptUrl, {
-              method: 'POST',
-              mode: 'no-cors', // Google Apps Script requires this
+              method: "POST",
+              mode: "no-cors", // Google Apps Script requires this
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify(registrationData)
+              body: JSON.stringify(registrationData),
             });
 
             // Since we're using no-cors, we can't read the response
@@ -88,7 +96,9 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
             setShowSuccess(true);
           } catch (fetchError) {
             console.error("Fetch error:", fetchError);
-            throw new Error("Network error while sending data to Google Sheets");
+            throw new Error(
+              "Network error while sending data to Google Sheets"
+            );
           }
         } else {
           // Fallback: just log the data if no Google Sheet link
@@ -97,11 +107,13 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
         }
 
         // Don't call onSubmit immediately - let user see success message first
-        
       } catch (error) {
         console.error("Error submitting registration:", error);
         // Show error message in the UI instead of browser alert
-        setErrors({ general: "Failed to submit registration. Please try again or contact the event organizer." });
+        setErrors({
+          general:
+            "Failed to submit registration. Please try again or contact the event organizer.",
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -114,7 +126,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
     onSubmit({
       eventId: event.id,
       eventTitle: event.title,
-      submittedAt: new Date().toISOString()
+      submittedAt: new Date().toISOString(),
     });
     // Close the registration form and go back to events
     onClose();
@@ -174,7 +186,9 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
                   name={question.id}
                   value={option}
                   checked={value === option}
-                  onChange={(e) => handleInputChange(question.id, e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(question.id, e.target.value)
+                  }
                 />
                 <span>{option}</span>
               </label>
@@ -189,13 +203,21 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
               <label key={index} className="checkbox-option">
                 <input
                   type="checkbox"
-                  checked={Array.isArray(value) ? value.includes(option) : false}
+                  checked={
+                    Array.isArray(value) ? value.includes(option) : false
+                  }
                   onChange={(e) => {
                     const currentValues = Array.isArray(value) ? value : [];
                     if (e.target.checked) {
-                      handleInputChange(question.id, [...currentValues, option]);
+                      handleInputChange(question.id, [
+                        ...currentValues,
+                        option,
+                      ]);
                     } else {
-                      handleInputChange(question.id, currentValues.filter(v => v !== option));
+                      handleInputChange(
+                        question.id,
+                        currentValues.filter((v) => v !== option)
+                      );
                     }
                   }}
                 />
@@ -222,6 +244,20 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
     <div className="registration-page">
       <div className="registration-container">
         <div className="form-header">
+          <button className="back-btn" onClick={onClose}>
+            ← Back to Events
+          </button>
+          <h1>Register for {event.title}</h1>
+          <div className="event-info-summary">
+            <p>
+              <strong>📅 Date:</strong> {event.eventDate || "TBA"}
+            </p>
+            <p>
+              <strong>🕒 Time:</strong>{" "}
+              {event.eventTime || (event.startTime && event.endTime)
+                ? `${event.startTime} - ${event.endTime}`
+                : "TBA"}
+            </p>
           <button className="back-btn" onClick={onClose}>← Back to Events</button>
           <div className="header-content">
             <h1>Register for {event.title}</h1>
@@ -235,9 +271,7 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
         <form onSubmit={handleSubmit} className="registration-form">
           {/* General Error Message */}
           {errors.general && (
-            <div className="error-message general-error">
-              {errors.general}
-            </div>
+            <div className="error-message general-error">{errors.general}</div>
           )}
 
           {event.questions.map((question) => (
@@ -257,13 +291,17 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
             <button type="button" className="cancel-btn" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className={`submit-btn ${isSubmitting ? 'submitting' : ''}`} disabled={isSubmitting}>
+            <button
+              type="submit"
+              className={`submit-btn ${isSubmitting ? "submitting" : ""}`}
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Submitting..." : "Submit Registration"}
             </button>
           </div>
         </form>
       </div>
-      
+
       <SuccessMessage
         isOpen={showSuccess}
         onClose={handleSuccessClose}
