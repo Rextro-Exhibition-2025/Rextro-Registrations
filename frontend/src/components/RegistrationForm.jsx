@@ -223,10 +223,12 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
       <div className="registration-container">
         <div className="form-header">
           <button className="back-btn" onClick={onClose}>← Back to Events</button>
-          <h1>Register for {event.title}</h1>
-          <div className="event-info-summary">
-            <p><strong>📅 Date:</strong> {event.eventDate || 'TBA'}</p>
-            <p><strong>🕒 Time:</strong> {event.eventTime || event.startTime && event.endTime ? `${event.startTime} - ${event.endTime}` : 'TBA'}</p>
+          <div className="header-content">
+            <h1>Register for {event.title}</h1>
+            <div className="event-info-summary">
+              <p><strong>📅 Date:</strong> {event.eventDate || 'TBA'}</p>
+              <p><strong>🕒 Time:</strong> {event.eventTime || event.startTime && event.endTime ? `${event.startTime} - ${event.endTime}` : 'TBA'}</p>
+            </div>
           </div>
         </div>
 
