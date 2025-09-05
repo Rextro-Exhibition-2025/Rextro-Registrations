@@ -45,3 +45,4 @@ const SuccessModal = ({ isOpen, onClose, title, message }) => {
 };
 
 export default SuccessModal;
+
