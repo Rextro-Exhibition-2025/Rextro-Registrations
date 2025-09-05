@@ -5,6 +5,7 @@ import CategorySection from "./components/CategorySection";
 import RegistrationModal from "./components/RegistrationModal";
 import RegistrationForm from "./components/RegistrationForm";
 import MeetingLinkModal from "./components/MeetingLinkModal";
+import eventsData from "./data/events";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -16,21 +17,18 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [route, setRoute] = useState(window.location.hash || "");
-  const [meetingModal, setMeetingModal] = useState({ open: false, title: "", link: "" });
+  const [meetingModal, setMeetingModal] = useState({
+    open: false,
+    title: "",
+    link: "",
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:5000/events")
-      .then((res) => res.json())
-      .then((data) => {
-        setEvents(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setIsLoading(false);
-      });
+    // Use the imported data directly instead of fetching from JSON server
+    setEvents(eventsData);
+    setIsLoading(false);
   }, []);
 
   // Simple hash-based routing
@@ -66,7 +64,7 @@ function App() {
         const evDate = new Date(ev.eventDate);
         today.setHours(0, 0, 0, 0);
         evDate.setHours(0, 0, 0, 0);
-        
+
         if (filters.eventStatus === "upcoming") {
           return evDate >= today;
         } else if (filters.eventStatus === "ended") {
@@ -121,13 +119,18 @@ function App() {
     setMeetingModal({ open: true, title: ev.title, link: payload?.link || "" });
   };
 
-  const closeMeetingModal = () => setMeetingModal({ open: false, title: "", link: "" });
+  const closeMeetingModal = () =>
+    setMeetingModal({ open: false, title: "", link: "" });
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  if (route.startsWith("#/register/") && selectedEvent && showRegistrationForm) {
+  if (
+    route.startsWith("#/register/") &&
+    selectedEvent &&
+    showRegistrationForm
+  ) {
     return (
       <div className="app-container">
         <RegistrationForm
@@ -177,28 +180,30 @@ function App() {
       {/* Header with Logo */}
       <div className="app-header">
         <img src="/RextroLogo.png" alt="Rextro" className="app-logo" />
-        <h1 className="events-page-title">
-          Engineering Faculty Events
-        </h1>
-        <p className="app-subtitle">Discover, Register & Participate in Academic Excellence</p>
+        <h1 className="events-page-title">Engineering Faculty Events</h1>
+        <p className="app-subtitle">
+          Discover, Register & Participate in Academic Excellence
+        </p>
       </div>
-      
+
       {/* Tab Navigation */}
       <div className="tab-navigation">
-        <button 
+        <button
           className={`tab-button ${activeTab === "webinar" ? "active" : ""}`}
           onClick={() => handleTabClick("webinar")}
         >
           Webinars
         </button>
-        <button 
+        <button
           className={`tab-button ${activeTab === "workshop" ? "active" : ""}`}
           onClick={() => handleTabClick("workshop")}
         >
           Workshops
         </button>
-        <button 
-          className={`tab-button ${activeTab === "competition" ? "active" : ""}`}
+        <button
+          className={`tab-button ${
+            activeTab === "competition" ? "active" : ""
+          }`}
           onClick={() => handleTabClick("competition")}
         >
           Competitions
@@ -218,9 +223,9 @@ function App() {
           </div>
         ) : (
           /* Current Tab Content */
-          <CategorySection 
-            title={getCurrentTitle()} 
-            events={getCurrentEvents()} 
+          <CategorySection
+            title={getCurrentTitle()}
+            events={getCurrentEvents()}
             onRegisterClick={handleRegisterClick}
             onMeetingLinkClick={handleMeetingLinkClick}
           />
