@@ -345,24 +345,28 @@
   height: 300px;
 }
 
-/* Loading State */
-.submit-btn.loading {
-  position: relative;
-  color: transparent;
+/* Submitting State */
+.submit-btn.submitting {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  cursor: not-allowed;
 }
 
-.submit-btn.loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: var(--text-primary);
-  animation: spin 1s ease-in-out infinite;
-  transform: translate(-50%, -50%);
+.submit-btn.submitting:hover {
+  transform: none;
+  box-shadow: var(--shadow-medium);
+}
+
+/* General Error Message */
+.general-error {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
 }
 
 /* Responsive Design */

@@ -111,7 +111,6 @@ function App() {
 
   const handleRegistrationSubmit = (registrationData) => {
     console.log("Registration submitted:", registrationData);
-    alert("Registration submitted successfully!");
     handleRegistrationFormClose();
   };
 
