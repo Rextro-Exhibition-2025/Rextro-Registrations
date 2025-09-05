@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import "./RegistrationForm.css";
-import MessagePopup from "./MessagePopup";
+import SuccessMessage from "./SuccessMessage";
 
 const RegistrationForm = ({ event, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [messagePopup, setMessagePopup] = useState({
-    isOpen: false,
-    type: '',
-    title: '',
-    message: ''
-  });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (questionId, value) => {
     setFormData(prev => ({
@@ -70,10 +65,10 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
             if (sheetId) {
               scriptUrl = `https://script.google.com/macros/s/${sheetId}/exec`;
             } else {
-              throw new Error("INVALID_LINK");
+              throw new Error("Invalid Google Sheets link format");
             }
           } else {
-            throw new Error("INVALID_LINK");
+            throw new Error("Invalid Google Sheet link format");
           }
           
           console.log("Sending data to:", scriptUrl);
@@ -90,99 +85,39 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
 
             // Since we're using no-cors, we can't read the response
             // But we can assume success if no error was thrown
-            console.log("Setting success popup...");
-            setMessagePopup({
-              isOpen: true,
-              type: 'success',
-              title: 'Registration Successful!',
-              message: 'Your registration has been submitted successfully! You will receive a confirmation email shortly.'
-            });
+            setShowSuccess(true);
           } catch (fetchError) {
             console.error("Fetch error:", fetchError);
-            
-            // Detect error type
-            if (fetchError.name === 'TypeError' && fetchError.message.includes('fetch')) {
-              throw new Error("NETWORK_ERROR");
-            } else if (fetchError.message.includes('timeout')) {
-              throw new Error("TIMEOUT_ERROR");
-            } else {
-              throw new Error("SERVER_ERROR");
-            }
+            throw new Error("Network error while sending data to Google Sheets");
           }
         } else {
           // Fallback: just log the data if no Google Sheet link
           console.log("Registration data:", registrationData);
-          console.log("Setting success popup (fallback)...");
-          setMessagePopup({
-            isOpen: true,
-            type: 'success',
-            title: 'Registration Successful!',
-            message: 'Your registration has been submitted successfully! You will receive a confirmation email shortly.'
-          });
+          setShowSuccess(true);
         }
 
-        // Call the onSubmit callback
-        onSubmit(registrationData);
+        // Don't call onSubmit immediately - let user see success message first
         
       } catch (error) {
         console.error("Error submitting registration:", error);
-        
-        // Determine error type and show appropriate message
-        let errorType = 'error';
-        let errorTitle = 'Registration Failed';
-        let errorMessage = 'Something went wrong. Please try again.';
-        
-        switch (error.message) {
-          case 'NETWORK_ERROR':
-            errorType = 'network';
-            errorTitle = 'Network Error';
-            errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.';
-            break;
-          case 'TIMEOUT_ERROR':
-            errorType = 'network';
-            errorTitle = 'Connection Timeout';
-            errorMessage = 'The request took too long to complete. Please check your internet connection and try again.';
-            break;
-          case 'SERVER_ERROR':
-            errorType = 'server';
-            errorTitle = 'Server Error';
-            errorMessage = 'The server is currently experiencing issues. Please try again in a few minutes.';
-            break;
-          case 'INVALID_LINK':
-            errorType = 'server';
-            errorTitle = 'Configuration Error';
-            errorMessage = 'There is a configuration issue with the registration system. Please contact the event organizer.';
-            break;
-          default:
-            errorType = 'error';
-            errorTitle = 'Registration Failed';
-            errorMessage = 'An unexpected error occurred. Please try again or contact the event organizer.';
-        }
-        
-        setMessagePopup({
-          isOpen: true,
-          type: errorType,
-          title: errorTitle,
-          message: errorMessage
-        });
+        // Show error message in the UI instead of browser alert
+        setErrors({ general: "Failed to submit registration. Please try again or contact the event organizer." });
       } finally {
         setIsSubmitting(false);
       }
     }
   };
 
-  const handleMessageClose = () => {
-    setMessagePopup({
-      isOpen: false,
-      type: '',
-      title: '',
-      message: ''
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    // Call the onSubmit callback when user closes success message
+    onSubmit({
+      eventId: event.id,
+      eventTitle: event.title,
+      submittedAt: new Date().toISOString()
     });
-    
-    // If it was a success message, close the form
-    if (messagePopup.type === 'success') {
-      onClose();
-    }
+    // Close the registration form and go back to events
+    onClose();
   };
 
   const renderQuestion = (question) => {
@@ -327,12 +262,10 @@ const RegistrationForm = ({ event, onClose, onSubmit }) => {
         </form>
       </div>
       
-      <MessagePopup
-        isOpen={messagePopup.isOpen}
-        type={messagePopup.type}
-        title={messagePopup.title}
-        message={messagePopup.message}
-        onClose={handleMessageClose}
+      <SuccessMessage
+        isOpen={showSuccess}
+        onClose={handleSuccessClose}
+        eventTitle={event.title}
       />
     </div>
   );
